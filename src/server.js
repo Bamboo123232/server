@@ -20,6 +20,7 @@ const validPriceIds = {
 };
 const express = require("express");
 const app = express();
+app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const crypto = require('crypto');
