@@ -27,10 +27,12 @@ const crypto = require('crypto');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: process.env.EMAIL_HOST, // e.g., 'mail.yourdomain.com'
+  port: process.env.EMAIL_PORT || 587, // Common ports: 587 (TLS) or 465 (SSL)
+  secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD
+    user: process.env.EMAIL_USER, // your full email address, e.g., 'support@yourdomain.com'
+    pass: process.env.EMAIL_PASSWORD // your email password
   }
 });
 const mysql = require('mysql2/promise');
@@ -197,7 +199,7 @@ app.post('/auth/register', async (req, res) => {
     // Send verification email
     const verificationLink = `https://e-protweaks.online/verify-email?token=${verificationToken}`;
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"PC Boost Pro" <${process.env.EMAIL_USER}>`, // Use your branded email
       to: email,
       subject: 'Verify your Protweaks Account',
       html: `
@@ -427,7 +429,7 @@ pool.getConnection()
 // Email sending function
 const sendLicenseEmail = async (customerEmail, licenseKey, productName) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"PC Boost Pro" <${process.env.EMAIL_USER}>`, // Use your branded email
     to: customerEmail,
     subject: 'Your PC Boost Pro License Key',
     html: `
