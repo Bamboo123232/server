@@ -29,10 +29,23 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST, // e.g., 'mail.yourdomain.com'
   port: process.env.EMAIL_PORT || 587, // Common ports: 587 (TLS) or 465 (SSL)
-  secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+  secure: process.env.EMAIL_SECURE, // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER, // your full email address, e.g., 'support@yourdomain.com'
     pass: process.env.EMAIL_PASSWORD // your email password
+  },
+  tls: {
+    rejectUnauthorized: false
+  },
+  debug: true // Enable debug logs
+});
+
+// Add transporter verification
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('SMTP connection error:', error);
+  } else {
+    console.log('SMTP server is ready to take our messages');
   }
 });
 const mysql = require('mysql2/promise');
