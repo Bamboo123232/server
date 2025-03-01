@@ -239,7 +239,7 @@ app.post('/auth/register', async (req, res) => {
       token: token, // Add this line
       email: email  // Add this line
     });
-  } catch (error) {
+   catch (error) {
     console.error('Registration error:', error);
     if (connection) connection.release();
     res.status(500).json({ message: 'Server error', error: error.message });
