@@ -213,7 +213,7 @@ app.post('/auth/register', async (req, res) => {
     // Send verification email
     try {
     const verificationLink = `https://e-protweaks.online/verify-email?token=${verificationToken}`;
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"PC Boost Pro" <${process.env.EMAIL_USER}>`, // Use your branded email
       to: email,
       subject: 'Verify your Protweaks Account',
