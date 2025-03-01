@@ -226,7 +226,7 @@ app.post('/auth/register', async (req, res) => {
         </div>
       `
     });
-    console.log('Verification email sent successfully:', info.messageId);
+    console.log('Verification email sent successfully);
 
     
     connection.release();
