@@ -74,6 +74,10 @@ const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100 // limit each IP to 100 requests per windowMs
 }); 
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+}); 
 
 app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
@@ -105,6 +109,7 @@ app.use(cors({
 }));
 app.use('/api/', apiLimiter);
 app.use('/auth/login', loginLimiter);
+app.use('/auth/register', registerLimiter)
 
 
 // Routes start here
@@ -274,13 +279,33 @@ app.get('/auth/verify-email', async (req, res) => {
     const { token } = req.query;
     connection = await pool.getConnection();
     
-    // First check if token exists and is valid
+    // First check if token exists and is valid - MODIFIED QUERY
     const [users] = await connection.execute(
-      'SELECT * FROM users WHERE verification_token = ? OR (verification_token IS NULL AND verified = TRUE)',
+      'SELECT * FROM users WHERE verification_token = ?',
       [token]
     );
 
     if (users.length === 0) {
+      // If no user found with this token, check if it might be already verified
+      const [verifiedUsers] = await connection.execute(
+        'SELECT * FROM users WHERE verification_token IS NULL AND verified = TRUE AND email = (SELECT email FROM users WHERE verification_token = ?)',
+        [token]
+      );
+      
+      if (verifiedUsers.length > 0) {
+        const jwtToken = jwt.sign(
+          { email: verifiedUsers[0].email },
+          JWT_SECRET,
+          { expiresIn: '24h' }
+        );
+        connection.release();
+        return res.status(200).json({ 
+          message: 'Email already verified',
+          token: jwtToken,
+          email: verifiedUsers[0].email
+        });
+      }
+      
       connection.release();
       return res.status(400).json({ message: 'Invalid or expired verification token' });
     }
