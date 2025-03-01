@@ -28,7 +28,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST, // e.g., 'mail.yourdomain.com'
-  port: process.env.EMAIL_PORT || 587, // Common ports: 587 (TLS) or 465 (SSL)
+  port: process.env.EMAIL_PORT, // Common ports: 587 (TLS) or 465 (SSL)
   secure: process.env.EMAIL_SECURE, // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER, // your full email address, e.g., 'support@yourdomain.com'
@@ -38,6 +38,7 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false
   },
   debug: true // Enable debug logs
+  logger: true // Add logger for more detailed logs
 });
 
 // Add transporter verification
@@ -226,6 +227,13 @@ app.post('/auth/register', async (req, res) => {
       `
     });
     
+    console.log('Verification email sent successfully:', info.messageId);
+    console.log('Email response:', info.response);
+  } catch (emailError) {
+    console.error('Error sending verification email:', emailError);
+    // Continue with registration even if email fails
+  }
+
     connection.release();
     res.status(201).json({ 
       message: 'Please check your email to verify your account',
