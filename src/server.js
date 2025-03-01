@@ -37,7 +37,8 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false
   },
-  debug: true // Enable debug log
+  debug: true // Enable debug logs
+  
 });
 
 // Add transporter verification
@@ -210,6 +211,7 @@ app.post('/auth/register', async (req, res) => {
     );
 
     // Send verification email
+    try {
     const verificationLink = `https://e-protweaks.online/verify-email?token=${verificationToken}`;
     await transporter.sendMail({
       from: `"PC Boost Pro" <${process.env.EMAIL_USER}>`, // Use your branded email
@@ -225,21 +227,20 @@ app.post('/auth/register', async (req, res) => {
         </div>
       `
     });
-    
     console.log('Verification email sent successfully:', info.messageId);
     console.log('Email response:', info.response);
   } catch (emailError) {
     console.error('Error sending verification email:', emailError);
     // Continue with registration even if email fails
   }
-
+    
     connection.release();
     res.status(201).json({ 
       message: 'Please check your email to verify your account',
       token: token, // Add this line
       email: email  // Add this line
     });
-   catch (error) {
+  } catch (error) {
     console.error('Registration error:', error);
     if (connection) connection.release();
     res.status(500).json({ message: 'Server error', error: error.message });
