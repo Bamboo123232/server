@@ -217,16 +217,193 @@ app.post('/auth/register', async (req, res) => {
       to: email,
       subject: 'Verify your Protweaks Account',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #4A90E2;">Welcome to PC Boost Pro!</h1>
-          <p>Please verify your email address by clicking the link below:</p>
-          <a href="${verificationLink}" style="display: inline-block; padding: 12px 24px; background-color: #4A90E2; color: white; text-decoration: none; border-radius: 5px;">
-            Verify Email
-          </a>
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .card {
+            background: linear-gradient(to bottom, #111827, #000000);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .header {
+            padding: 40px 24px 24px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin: 0 auto 20px;
+            width: 64px;
+            height: 64px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+        
+        .subtitle {
+            color: #9ca3af;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 24px 32px 40px;
+        }
+        
+        .verification-box {
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            color: #3b82f6;
+        }
+        
+        p {
+            margin-bottom: 16px;
+            color: #9ca3af;
+            font-size: 15px;
+        }
+        
+        .email {
+            font-weight: 500;
+            color: #ffffff;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            background-color: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 32px 0;
+        }
+        
+        .alt-link-container {
+            background-color: #1f2937;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            word-break: break-all;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+        
+        .footer {
+            padding: 24px 32px;
+            text-align: center;
+            font-size: 13px;
+            color: #6b7280;
+            border-top: 1px solid rgba(75, 85, 99, 0.4);
+        }
+        
+        .expiry-note {
+            margin-top: 24px;
+            font-size: 13px;
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            .content {
+                padding: 24px 20px 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="logo">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                </div>
+                <h1>Verify Your Email</h1>
+                <div class="subtitle">One more step to complete your registration</div>
+            </div>
+            
+            <div class="content">
+                <div class="verification-box">
+                    <div class="icon">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <h2 style="font-size: 20px; font-weight: 600; color: #3b82f6; margin-bottom: 12px;">Email Verification Required</h2>
+                    <p style="color: #d1d5db; margin-bottom: 0;">
+                        Please verify your email address to access your dashboard.
+                    </p>
+                </div>
+                
+                <p>
+                    We need to confirm your email address before you can access your account. Please click the button below to verify your email:
+                </p>
+                
+                <a href="${verificationLink}" class="btn">Verify My Email →</a>
+                
+                <div class="expiry-note">
+                    This verification link will expire in 24 hours. If you didn't create an account, you can safely ignore this email.
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>© 2024 Protweaks. All rights reserved.</p>
+                <p style="margin-top: 8px;">
+
+                </p>
+            </div>
         </div>
+    </div>
+</body>
+</html>
       `
     });
-
+    console.log('Verification email sent successfully:', info.messageId);
 
     
     connection.release();
